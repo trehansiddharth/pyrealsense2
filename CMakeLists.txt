@@ -11,10 +11,11 @@ FIND_PACKAGE(realsense2 REQUIRED)
 INCLUDE(${SWIG_USE_FILE})
 
 INCLUDE_DIRECTORIES("/home/nvidia/opencv-swig/lib"
-    "/home/nvidia/vision_ws/install_isolated/include"
     ${OpenCV_INCLUDE_DIRS}
     ${PYTHON_INCLUDE_DIRS}
     ${PROJECT_SOURCE_DIR}/src
+    ${REALSENSE_INCLUDE_DIR}
+    /usr/local/include
 )
 
 ADD_LIBRARY(pyrealsense2 SHARED src/pyrealsense2.cpp)
