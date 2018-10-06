@@ -28,8 +28,10 @@ RealsenseReader::RealsenseReader(int _height, int _width, int _framerate) {
 
 FrameData RealsenseReader::get_frames() {
     frames = pipe.wait_for_frames();
+    rs2::align align(RS2_STREAM_COLOR);
+    rs2::frameset aligned_frames = align.process(frames);
     rs2::frame color_frame = frames.get_color_frame();
-    rs2::frame depth_frame = frames.get_depth_frame();
+    rs2::frame depth_frame = aligned_frames.get_depth_frame();
     Mat color(Size(width, height), CV_8UC3, (void*) color_frame.get_data(), Mat::AUTO_STEP);
     Mat depth(Size(width, height), CV_16U, (void*) depth_frame.get_data(), Mat::AUTO_STEP);
     points = pc.calculate(depth_frame);
