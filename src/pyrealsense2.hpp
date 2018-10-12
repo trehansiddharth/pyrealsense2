@@ -24,8 +24,9 @@ class RealsenseReader {
     int height;
     int width;
     int framerate;
+    bool _align_color;
 public:
-    RealsenseReader(int, int, int);
+    RealsenseReader(int, int, int, bool align_color=true);
     FrameData get_frames();
 };
 

@@ -12,10 +12,11 @@ FrameData::FrameData(Mat _color, Mat _depth, Mat _infrared, Mat _vertices) {
     vertices = _vertices;
 }
 
-RealsenseReader::RealsenseReader(int _height, int _width, int _framerate) {
+RealsenseReader::RealsenseReader(int _height, int _width, int _framerate, bool align_color) {
     height = _height;
     width = _width;
     framerate = _framerate;
+    _align_color = align_color;
 
     pipe = rs2::pipeline();
 
@@ -45,8 +46,15 @@ RealsenseReader::RealsenseReader(int _height, int _width, int _framerate) {
 FrameData RealsenseReader::get_frames() {
     frames = pipe.wait_for_frames();
     rs2::frame color_frame = frames.get_color_frame();
-    rs2::frame depth_frame = frames.get_depth_frame();
+    rs2::frame depth_frame;
     rs2::frame infrared_frame = frames.get_infrared_frame();
+    if (_align_color) {
+        rs2::align align(RS2_STREAM_COLOR);
+        rs2::frameset aligned_frames = align.process(frames);
+        depth_frame = aligned_frames.get_depth_frame();
+    } else {
+        depth_frame = frames.get_depth_frame();
+    }
     Mat color(Size(width, height), CV_8UC3, (void*) color_frame.get_data(), Mat::AUTO_STEP);
     Mat depth(Size(width, height), CV_16U, (void*) depth_frame.get_data(), Mat::AUTO_STEP);
     Mat infrared(Size(width, height), CV_8U, (void*) infrared_frame.get_data(), Mat::AUTO_STEP);
