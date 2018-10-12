@@ -11,8 +11,9 @@ class FrameData {
 public:
     Mat color;
     Mat depth;
+    Mat infrared;
     Mat vertices;
-    FrameData(Mat, Mat, Mat);
+    FrameData(Mat, Mat, Mat, Mat);
 };
 
 class RealsenseReader {
